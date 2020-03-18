@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">IGoAlone_MapBoxAPI_Training</string>
+    <string name="access_token" translatable="false">pk.eyJ1IjoiamluaG8xMSIsImEiOiJjazdlOWhtNXIwMnl5M2ZwNjQ0eXF0ZHdvIn0.lsCVXmrl5D7MifZMieIhEA</string>
+    <string name="user_location_permission_explanation">EXPLANATION_HERE</string>
+</resources>
