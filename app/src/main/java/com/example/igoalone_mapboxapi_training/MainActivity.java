@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
                 enableLocationComponent(mapboxMap.getStyle());
             }
         } else {
-            //Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.user_location_permission_not_granted, Toast.LENGTH_LONG).show();
             finish();
         }
     }
