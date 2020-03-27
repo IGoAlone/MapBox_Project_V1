@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.igoalone_mapboxapi_training"
-        minSdkVersion 15
+        minSdkVersion 14
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -20,6 +20,7 @@ android {
 }
 repositories {
     mavenCentral()
+
 }
 
 dependencies {
