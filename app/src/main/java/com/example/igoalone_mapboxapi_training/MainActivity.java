@@ -304,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements
             locationComponent.setLocationComponentEnabled(true);
             // Set the component's camera mode
             locationComponent.setCameraMode(CameraMode.TRACKING);
+            locationComponent.setRenderMode(RenderMode.COMPASS);
 
         } else {
             permissionsManager = new PermissionsManager(this);
