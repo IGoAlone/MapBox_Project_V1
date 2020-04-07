@@ -125,8 +125,9 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
                         initSearchFab();
-//                 addUserLocations();
 
+                        style.addImage(symbolIconId, BitmapFactory.decodeResource(
+                                MainActivity.this.getResources(),R.drawable.igoalone_marker));
                 // Create an empty GeoJSON source using the empty feature collection
                 setUpSource(style);
 
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements
                         addDestinationIconSymbolLayer(style);
 
                         mapboxMap.addOnMapClickListener(MainActivity.this);
+
                         button = findViewById(R.id.startButton);
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -149,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
                                         .build();
 
                                 //이부분이 네비게이션 호출 부분
-                                NavigationLauncher.startNavigation(MainActivity.this, options);
+                               // NavigationLauncher.startNavigation(MainActivity.this, options);
                             }
                         });
                     }
@@ -171,14 +173,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
-//    private void addUserLocations() {
-//        user = CarmenFeature.builder().text("Mapbox SF Office")
-//                .geometry(Point.fromLngLat(-122.3964485, 37.7912561))
-//                .placeName("50 Beale St, San Francisco, CA")
-//                .id("mapbox-sf")
-//                .properties(new JsonObject())
-//                .build();
-//    }
 
         private void setUpSource(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addSource(new GeoJsonSource(geojsonSourceLayerId));
