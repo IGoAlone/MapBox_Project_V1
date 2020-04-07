@@ -137,7 +137,11 @@ public class MainActivity extends AppCompatActivity implements
                         });
                     }
 
+<<<<<<< HEAD
                 });
+=======
+        });
+>>>>>>> jinho
     }
     private void addDestinationIconSymbolLayer(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addImage("destination-icon-id",
