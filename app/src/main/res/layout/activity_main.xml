@@ -38,6 +38,8 @@
         android:layout_margin="16dp"
         android:tint="@android:color/white"
         app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        app:layout_constraintTop_toTopOf="@+id/mapView"
         app:srcCompat="@android:drawable/ic_search_category_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
