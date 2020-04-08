@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -331,7 +332,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    // Button 관련 메서드
+    public void sosButtonClick(View v){
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112")); 
+        startActivity(myIntent);
 
+
+    }
 
     @Override
     protected void onStart() {

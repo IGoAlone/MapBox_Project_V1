@@ -17,7 +17,9 @@
         mapbox:layout_constraintTop_toTopOf="parent"
         mapbox:mapbox_cameraTargetLat="36.16266"
         mapbox:mapbox_cameraTargetLng="-86.78160"
-        mapbox:mapbox_cameraZoom="12"/>
+        mapbox:mapbox_cameraZoom="12">
+
+    </com.mapbox.mapboxsdk.maps.MapView>
 
     <Button
         android:id="@+id/startButton"
@@ -41,5 +43,17 @@
         app:layout_constraintStart_toStartOf="@+id/mapView"
         app:layout_constraintTop_toTopOf="@+id/mapView"
         app:srcCompat="@android:drawable/ic_search_category_default" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/mapboxPink"
+        android:onClick="sosButtonClick"
+        android:text="SOS"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
