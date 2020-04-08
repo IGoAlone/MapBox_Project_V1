@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
                                     .target(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
                                             ((Point) selectedCarmenFeature.geometry()).longitude()))
                                     .zoom(14)
-                                    .build()), 4000);
+                                    .build()), 2000);
 
                   set_destination_route(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
                           ((Point) selectedCarmenFeature.geometry()).longitude()));
