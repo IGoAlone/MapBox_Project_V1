@@ -334,9 +334,23 @@ public class MainActivity extends AppCompatActivity implements
 
     // Button 관련 메서드
     public void sosButtonClick(View v){
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112")); 
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112"));
         startActivity(myIntent);
+    }
 
+    public void cctvButtonClick(View v){ // cctv
+
+    }
+
+    public void policeButtonClick(View v){ // 경찰서
+
+    }
+
+    public void bellButtonClick(View v){ // 안전벨
+
+    }
+
+    public void conButtonClick(View v){ // 편의점
 
     }
 
