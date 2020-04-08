@@ -56,45 +56,13 @@
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button2"
+    <ImageButton
+        android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="cctvButtonClick"
-        android:text="CCTV"
-        mapbox:layout_constraintBottom_toBottomOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:onClick="conButtonClick"
-        android:text="편의점"
-        app:layout_constraintStart_toEndOf="@+id/button2"
-        mapbox:layout_constraintBottom_toBottomOf="parent" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:onClick="policeButtonClick"
-        android:text="경찰서"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
-        app:layout_constraintStart_toEndOf="@+id/button3" />
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        mapbox:srcCompat="@drawable/cctv" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:onClick="bellButtonClick"
-        android:text="안심벨"
-        app:layout_constraintBottom_toBottomOf="@+id/mapView"
-        app:layout_constraintStart_toEndOf="@+id/button4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
