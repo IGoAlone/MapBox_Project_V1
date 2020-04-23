@@ -14,8 +14,8 @@
     <style name="NavigationMapRoute">
         <!-- Colors -->
         <item name="routeColor">@color/mapboxBlue</item>
-        <item name="routeModerateCongestionColor">@color/mapboxYellow</item>
-        <item name="routeSevereCongestionColor">@color/mapboxPink</item>
+        <item name="routeModerateCongestionColor">@color/mapboxBlue</item>
+        <item name="routeSevereCongestionColor">@color/mapboxBlue</item>
         <item name="routeShieldColor">@color/mapboxWhite</item>
         <!-- Scales -->
         <item name="routeScale">1.0</item>
