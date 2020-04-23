@@ -88,15 +88,11 @@ public class MainActivity extends AppCompatActivity implements
         Mapbox.getInstance(this, getString(R.string.access_token));
 
 
-        setContentView(R.layout.activity_main); // 수정 필요
+        setContentView(R.layout.activity_main);
 
-//        Handler hand = new Handler();
-//        hand.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent loadIntent = new Intent(MainActivity.this, )
-//            }
-//        },2000);
+
+
+
 
 
         mapView = findViewById(R.id.mapView);
