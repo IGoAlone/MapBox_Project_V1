@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void cctvButtonClick(View v){ // cctv
-
+        Toast.makeText(this,"cctv",Toast.LENGTH_LONG).show();
     }
 
     public void policeButtonClick(View v){ // 경찰서
