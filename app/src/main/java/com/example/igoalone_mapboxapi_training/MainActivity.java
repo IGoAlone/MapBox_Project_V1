@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -85,7 +86,19 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, getString(R.string.access_token));
-        setContentView(R.layout.activity_main);
+
+
+        setContentView(R.layout.activity_main); // 수정 필요
+
+//        Handler hand = new Handler();
+//        hand.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Intent loadIntent = new Intent(MainActivity.this, )
+//            }
+//        },2000);
+
+
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
