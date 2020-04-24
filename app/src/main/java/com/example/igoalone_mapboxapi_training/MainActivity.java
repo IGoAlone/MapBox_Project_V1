@@ -345,6 +345,22 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(myIntent);
     }
 
+//    public void whichButtonClick(View v){
+//        switch (v.getId()){
+//            case R.id.imageButton:
+//                cctvButtonClick(v);
+//                break;
+//            case R.id.imageButton2:
+//                policeButtonClick(v);
+//                break;
+//            case R.id.imageButton3:
+//                bellButtonClick(v);
+//                break;
+//            case R.id.imageButton4:
+//                conButtonClick(v);
+//                break;
+//        }
+//    }
     public void cctvButtonClick(View v){ // cctv
         //ImageButton imageButton = findViewById(R.id.imageButton);
         //imageButton.setBackgroundResource(R.drawable.stroke);
