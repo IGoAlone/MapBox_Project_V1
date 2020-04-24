@@ -64,6 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
+        android:backgroundTint="@android:color/transparent"
         android:onClick="cctvButtonClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/mapView"
@@ -74,6 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="policeButtonClick"
+        android:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
         mapbox:srcCompat="@drawable/police" />
@@ -83,6 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="bellButtonClick"
+        android:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageButton2"
         mapbox:srcCompat="@drawable/bell" />
@@ -92,6 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="conButtonClick"
+        android:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
         app:layout_constraintStart_toEndOf="@+id/imageButton3"
         mapbox:srcCompat="@drawable/convenience_store" />

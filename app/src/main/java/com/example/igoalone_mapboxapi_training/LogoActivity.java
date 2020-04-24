@@ -40,7 +40,7 @@ public class LogoActivity extends AppCompatActivity {
             public void run() {
                 Intent loadIntent = new Intent(LogoActivity.this, MainActivity.class);
                 startActivity(loadIntent);
-                finish();
+                finish(); // activity terminate
             }
         },2300);
     }

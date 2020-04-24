@@ -5,11 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -335,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+
     // Button 관련 메서드
     public void sosButtonClick(View v){
         Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112"));
@@ -342,7 +346,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void cctvButtonClick(View v){ // cctv
-        Toast.makeText(this,"cctv",Toast.LENGTH_LONG).show();
+        //ImageButton imageButton = findViewById(R.id.imageButton);
+        //imageButton.setBackgroundResource(R.drawable.stroke);
+        v.findViewById(R.id.imageButton);
+        v.setBackgroundResource(R.drawable.stroke);
+
     }
 
     public void policeButtonClick(View v){ // 경찰서
