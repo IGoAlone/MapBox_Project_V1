@@ -11,13 +11,18 @@
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="85dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent"
         mapbox:mapbox_cameraTargetLat="36.16266"
         mapbox:mapbox_cameraTargetLng="-86.78160"
-        mapbox:mapbox_cameraZoom="12"/>
+        mapbox:mapbox_cameraZoom="12">
+
+    </com.mapbox.mapboxsdk.maps.MapView>
 
     <Button
         android:id="@+id/startButton"
@@ -41,5 +46,55 @@
         app:layout_constraintStart_toStartOf="@+id/mapView"
         app:layout_constraintTop_toTopOf="@+id/mapView"
         app:srcCompat="@android:drawable/ic_search_category_default" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/mapboxPink"
+        android:onClick="sosButtonClick"
+        android:text="SOS"
+        mapbox:layout_constraintEnd_toEndOf="parent"
+        mapbox:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:onClick="cctvButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        mapbox:srcCompat="@drawable/cctv" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="policeButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        mapbox:srcCompat="@drawable/police" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="bellButtonClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageButton2"
+        mapbox:srcCompat="@drawable/bell" />
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="conButtonClick"
+        app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
+        app:layout_constraintStart_toEndOf="@+id/imageButton3"
+        mapbox:srcCompat="@drawable/convenience_store" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

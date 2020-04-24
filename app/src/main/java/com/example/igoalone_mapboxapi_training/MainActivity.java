@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -84,7 +86,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, getString(R.string.access_token));
+
         setContentView(R.layout.activity_main);
+
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -182,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
                                     .target(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
                                             ((Point) selectedCarmenFeature.geometry()).longitude()))
                                     .zoom(14)
-                                    .build()), 4000);
+                                    .build()), 2000);
 
                   set_destination_route(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
                           ((Point) selectedCarmenFeature.geometry()).longitude()));
@@ -331,7 +335,27 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    // Button 관련 메서드
+    public void sosButtonClick(View v){
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112"));
+        startActivity(myIntent);
+    }
 
+    public void cctvButtonClick(View v){ // cctv
+        Toast.makeText(this,"cctv",Toast.LENGTH_LONG).show();
+    }
+
+    public void policeButtonClick(View v){ // 경찰서
+
+    }
+
+    public void bellButtonClick(View v){ // 안전벨
+
+    }
+
+    public void conButtonClick(View v){ // 편의점
+
+    }
 
     @Override
     protected void onStart() {

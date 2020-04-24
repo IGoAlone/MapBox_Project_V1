@@ -3,5 +3,6 @@
     <string name="access_token" translatable="false">pk.eyJ1Ijoic29veWVvbmlkYWEiLCJhIjoiY2s3bXluYWgwMGpmZDNrcW0xeW1oOTEzdiJ9.4rjSjtZxuIM6OvJFEGC3Dw</string>
     <string name="user_location_permission_explanation">EXPLANATION_HERE</string>
     <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
+    <string name="title_activity_logo">LogoActivity</string>
 
 </resources>

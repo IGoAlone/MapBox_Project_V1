@@ -6,16 +6,28 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- No Title Bar-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="NavigationMapRoute">
         <!-- Colors -->
         <item name="routeColor">@color/mapboxBlue</item>
-        <item name="routeModerateCongestionColor">@color/mapboxYellow</item>
-        <item name="routeSevereCongestionColor">@color/mapboxPink</item>
+        <item name="routeModerateCongestionColor">@color/mapboxBlue</item>
+        <item name="routeSevereCongestionColor">@color/mapboxBlue</item>
         <item name="routeShieldColor">@color/mapboxWhite</item>
         <!-- Scales -->
         <item name="routeScale">1.0</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
