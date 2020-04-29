@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,16 +22,16 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-// Classes needed to handle location permissions
-import com.mapbox.android.core.permissions.PermissionsListener;
-import com.mapbox.android.core.permissions.PermissionsManager;
 import java.util.List;
 
-// Classes needed to add the location component
+// 위치
+import com.mapbox.android.core.permissions.PermissionsListener;
+import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.location.modes.RenderMode;
-// classes needed to add a marker
+
+// 마커
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -41,28 +40,51 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
-// classes to calculate a route
+
+// 경로계산
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-// classes needed to launch navigation UI
+
+// 네비게이션 ui
 import android.view.View;
 import android.widget.Button;
-
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
+
+//서버 통신
+import android.os.AsyncTask;
+import android.widget.TextView;
+
+import com.example.igoalone_mapboxapi_training.DAO.Bell;
+import com.example.igoalone_mapboxapi_training.DAO.Cctv;
+import com.example.igoalone_mapboxapi_training.DAO.Police;
+import com.example.igoalone_mapboxapi_training.DAO.Store;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback, PermissionsListener {
     //네비게이션 기능
+
     // variables for adding location layer
     private MapView mapView;
     private MapboxMap mapboxMap;
@@ -82,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements
     private String geojsonSourceLayerId = "geojsonSourceLayerId";
     private String symbolIconId = "symbolIconId";
 
+    int flag=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +116,82 @@ public class MainActivity extends AppCompatActivity implements
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        new JSONTask().execute("http://172.30.1.23:3000/cctv");
+        new JSONTask().execute("http://172.30.1.23:3000/bell");
+        new JSONTask().execute("http://172.30.1.23:3000/store");
+        new JSONTask().execute("http://172.30.1.23:3000/police");
+
+    }
+
+    public class JSONTask extends AsyncTask<String,String,String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            HttpURLConnection con = null;
+            BufferedReader reader = null;
+            try {
+                URL url = new URL(urls[0]);
+                con = (HttpURLConnection) url.openConnection();
+                con.connect();
+                InputStream stream = con.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuffer buffer = new StringBuffer();
+                String line = "";
+                while ((line = reader.readLine()) != null) buffer.append(line);
+                return buffer.toString();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                con.disconnect();
+                try {
+                    if (reader != null)
+                        reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            //    jsonView.setText(result);
+
+            Gson gson = new Gson();
+
+            if(flag==0) {
+                Type listType = new TypeToken<ArrayList<Cctv>>() {
+                }.getType();
+                List<Cctv> cctv = gson.fromJson(result, listType);
+                //3331
+            }
+            else if(flag==1)
+            {
+                Type listType = new TypeToken<ArrayList<Bell>>() {
+                }.getType();
+                List<Bell> bell = gson.fromJson(result, listType);
+                //118
+            }
+            else if(flag==2)
+            {
+                Type listType = new TypeToken<ArrayList<Store>>() {
+                }.getType();
+                List<Store> store = gson.fromJson(result, listType);
+                //233
+            }
+            else if(flag==3)
+            {
+                Type listType = new TypeToken<ArrayList<Police>>() {
+                }.getType();
+                List<Police> police = gson.fromJson(result, listType);
+                //25
+            }
+            flag++;
+        }
     }
 
     @Override
@@ -125,14 +225,14 @@ public class MainActivity extends AppCompatActivity implements
                                         .shouldSimulateRoute(simulateRoute)
                                         .build();
 
-                                //이부분이 네비게이션 호출 부분
+                                //네비게이션 호출 부분 없앰
                                // NavigationLauncher.startNavigation(MainActivity.this, options);
                             }
                         });
                     }
                 });
     }
-    ////////// 검색버튼누르면 장소 검색할 수 있게 화면전환
+   //검색 누르면 화면 전환
     private void initSearchFab() {
         findViewById(R.id.fab_location_search).setOnClickListener( new View.OnClickListener() {
             @Override
@@ -160,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements
         ));
     }
 
-    //검색한 목적지 정보 받아오는 부분
+    //검색한 목적지 정보 받아옴
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -192,8 +292,6 @@ public class MainActivity extends AppCompatActivity implements
                           ((Point) selectedCarmenFeature.geometry()).longitude()));
                 }
 
-                //이게 목적지 검색햇을때 목적지 위도 경도
-                //new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),((Point) selectedCarmenFeature.geometry()).longitude())
             }
         }
     }
@@ -212,26 +310,6 @@ public class MainActivity extends AppCompatActivity implements
         loadedMapStyle.addLayer(destinationSymbolLayer);
     }
 
-    //여기서부터 공사 시작~!
-    // 터치이벤트말고 위에 코드에서 검색 목적지 위도경도 받아오는 부분을 경로 그리는 데에 목적지 부분에다 넣으면 될것같음
-//    @SuppressWarnings( {"MissingPermission"})
-//    @Override
-//    public boolean onMapClick(@NonNull LatLng point) {
-//
-//        Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
-//        Point originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
-//                locationComponent.getLastKnownLocation().getLatitude());
-//
-//        GeoJsonSource source = mapboxMap.getStyle().getSourceAs("destination-source-id");
-//        if (source != null) {
-//            source.setGeoJson(Feature.fromGeometry(destinationPoint));
-//        }
-//
-//        getRoute(originPoint, destinationPoint);
-//        button.setEnabled(true);
-//        button.setBackgroundResource(R.color.mapboxBlue);
-//        return true;
-//    }
 
     public boolean set_destination_route(@NonNull LatLng point){
 
@@ -240,15 +318,6 @@ public class MainActivity extends AppCompatActivity implements
                 locationComponent.getLastKnownLocation().getLatitude());
         getRoute(originPoint, destinationPoint);
         return true;
-    }
-
-    public void drawroute_sooyeon()
-    {
-        boolean simulateRoute = true;
-        NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                .directionsRoute(currentRoute)
-                .shouldSimulateRoute(simulateRoute)
-                .build();
     }
 
     private void getRoute(Point origin, Point destination) {
@@ -260,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-// You can get the generic HTTP info about the response
                         Log.d(TAG, "Response code: " + response.code());
                         if (response.body() == null) {
                             Log.e(TAG, "No routes found, make sure you set the right user and access token.");
@@ -308,10 +376,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -343,6 +407,9 @@ public class MainActivity extends AppCompatActivity implements
 
     public void cctvButtonClick(View v){ // cctv
         Toast.makeText(this,"cctv",Toast.LENGTH_LONG).show();
+//        Intent intent = new Intent(this,Main2Activity.class);
+//        startActivity(intent);
+
     }
 
     public void policeButtonClick(View v){ // 경찰서
