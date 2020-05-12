@@ -1,6 +1,7 @@
 package com.example.igoalone_mapboxapi_training;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
+
 import java.util.List;
 
 // 위치
@@ -37,6 +40,7 @@ import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
@@ -49,13 +53,17 @@ import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 // 네비게이션 ui
 import android.view.View;
 import android.widget.Button;
+
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
 //서버 통신
@@ -104,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements
     private String geojsonSourceLayerId = "geojsonSourceLayerId";
     private String symbolIconId = "symbolIconId";
 
-    int flag=0;
+    int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,14 +125,24 @@ public class MainActivity extends AppCompatActivity implements
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        new JSONTask().execute("http://172.30.1.23:3000/cctv");
-        new JSONTask().execute("http://172.30.1.23:3000/bell");
-        new JSONTask().execute("http://172.30.1.23:3000/store");
-        new JSONTask().execute("http://172.30.1.23:3000/police");
+        new JSONTask().execute("http://172.30.1.41:3000/cctv");
+        //new JSONTask().execute("http://172.30.1.41:3000/bell");
+        new JSONTask().execute("http://172.30.1.41:3000/store");
+        new JSONTask().execute("http://172.30.1.41:3000/police");
+
+        ImageButton button = (ImageButton)findViewById(R.id.imageButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this, "pppp", Toast.LENGTH_SHORT).show();
+                new JSONTask().execute("http://172.30.1.41:3000/bell");
+            }
+        });
 
     }
 
-    public class JSONTask extends AsyncTask<String,String,String> {
+    public class JSONTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... urls) {
 
@@ -156,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -163,28 +182,22 @@ public class MainActivity extends AppCompatActivity implements
 
             Gson gson = new Gson();
 
-            if(flag==0) {
+            if (flag == 0) {
                 Type listType = new TypeToken<ArrayList<Cctv>>() {
                 }.getType();
                 List<Cctv> cctv = gson.fromJson(result, listType);
                 //3331
-            }
-            else if(flag==1)
-            {
+            } else if (flag == 1) {
                 Type listType = new TypeToken<ArrayList<Bell>>() {
                 }.getType();
                 List<Bell> bell = gson.fromJson(result, listType);
                 //118
-            }
-            else if(flag==2)
-            {
+            } else if (flag == 2) {
                 Type listType = new TypeToken<ArrayList<Store>>() {
                 }.getType();
                 List<Store> store = gson.fromJson(result, listType);
                 //233
-            }
-            else if(flag==3)
-            {
+            } else if (flag == 3) {
                 Type listType = new TypeToken<ArrayList<Police>>() {
                 }.getType();
                 List<Police> police = gson.fromJson(result, listType);
@@ -204,12 +217,12 @@ public class MainActivity extends AppCompatActivity implements
                         initSearchFab();
 
                         style.addImage(symbolIconId, BitmapFactory.decodeResource(
-                                MainActivity.this.getResources(),R.drawable.igoalone_marker));
-                // Create an empty GeoJSON source using the empty feature collection
-                setUpSource(style);
+                                MainActivity.this.getResources(), R.drawable.igoalone_marker));
+                        // Create an empty GeoJSON source using the empty feature collection
+                        setUpSource(style);
 
-                //검색된 위치의 피처 좌표를 표시하기 위해 새 심볼 레이어를 설정
-                setupLayer(style);
+                        //검색된 위치의 피처 좌표를 표시하기 위해 새 심볼 레이어를 설정
+                        setupLayer(style);
 
                         enableLocationComponent(style);
 
@@ -226,15 +239,16 @@ public class MainActivity extends AppCompatActivity implements
                                         .build();
 
                                 //네비게이션 호출 부분 없앰
-                               // NavigationLauncher.startNavigation(MainActivity.this, options);
+                                // NavigationLauncher.startNavigation(MainActivity.this, options);
                             }
                         });
                     }
                 });
     }
-   //검색 누르면 화면 전환
+
+    //검색 누르면 화면 전환
     private void initSearchFab() {
-        findViewById(R.id.fab_location_search).setOnClickListener( new View.OnClickListener() {
+        findViewById(R.id.fab_location_search).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new PlaceAutocomplete.IntentBuilder()
@@ -249,14 +263,14 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-        private void setUpSource(@NonNull Style loadedMapStyle) {
+    private void setUpSource(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addSource(new GeoJsonSource(geojsonSourceLayerId));
     }
 
     private void setupLayer(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addLayer(new SymbolLayer("SYMBOL_LAYER_ID", geojsonSourceLayerId).withProperties(
                 iconImage(symbolIconId),
-                iconOffset(new Float[] {0f, -8f})
+                iconOffset(new Float[]{0f, -8f})
         ));
     }
 
@@ -277,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements
                     GeoJsonSource source = style.getSourceAs(geojsonSourceLayerId);
                     if (source != null) {
                         source.setGeoJson(FeatureCollection.fromFeatures(
-                                new Feature[] {Feature.fromJson(selectedCarmenFeature.toJson())}));
+                                new Feature[]{Feature.fromJson(selectedCarmenFeature.toJson())}));
                     }
 
                     // Move map camera to the selected location
@@ -288,8 +302,8 @@ public class MainActivity extends AppCompatActivity implements
                                     .zoom(14)
                                     .build()), 2000);
 
-                  set_destination_route(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
-                          ((Point) selectedCarmenFeature.geometry()).longitude()));
+                    set_destination_route(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
+                            ((Point) selectedCarmenFeature.geometry()).longitude()));
                 }
 
             }
@@ -311,9 +325,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public boolean set_destination_route(@NonNull LatLng point){
+    public boolean set_destination_route(@NonNull LatLng point) {
 
-        Point destinationPoint = Point.fromLngLat(point.getLongitude(),point.getLatitude());
+        Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
         Point originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
                 locationComponent.getLastKnownLocation().getLatitude());
         getRoute(originPoint, destinationPoint);
@@ -356,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements
                 });
     }
 
-    @SuppressWarnings( {"MissingPermission"})
+    @SuppressWarnings({"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
@@ -400,27 +414,27 @@ public class MainActivity extends AppCompatActivity implements
 
 
     // Button 관련 메서드
-    public void sosButtonClick(View v){
+    public void sosButtonClick(View v) {
         Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112"));
         startActivity(myIntent);
     }
 
-    public void cctvButtonClick(View v){ // cctv
-        Toast.makeText(this,"cctv",Toast.LENGTH_LONG).show();
+    public void cctvButtonClick(View v) { // cctv
+        Toast.makeText(this, "cctv", Toast.LENGTH_LONG).show();
 //        Intent intent = new Intent(this,Main2Activity.class);
 //        startActivity(intent);
 
     }
 
-    public void policeButtonClick(View v){ // 경찰서
+    public void policeButtonClick(View v) { // 경찰서
 
     }
 
-    public void bellButtonClick(View v){ // 안전벨
+    public void bellButtonClick(View v) { // 안전벨
 
     }
 
-    public void conButtonClick(View v){ // 편의점
+    public void conButtonClick(View v) { // 편의점
 
     }
 

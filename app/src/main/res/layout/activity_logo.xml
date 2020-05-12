@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/logoBackGround"
     tools:context=".LogoActivity">
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:src="@drawable/mainlogo"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -23,13 +24,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="귀갓길, 당신의 안전을 확인하세요"
-        android:textSize="18sp"
+        android:textColor="@color/mapboxWhite"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView1"
-        app:layout_constraintVertical_bias="0.41" />
+        app:layout_constraintVertical_bias="0.333" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@
         mapbox:mapbox_cameraTargetLng="-86.78160"
         mapbox:mapbox_cameraZoom="12">
 
+
     </com.mapbox.mapboxsdk.maps.MapView>
 
     <Button
@@ -67,6 +68,7 @@
         android:onClick="cctvButtonClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/mapView"
+        android:background="@android:color/transparent"
         mapbox:srcCompat="@drawable/cctv" />
 
     <ImageButton
@@ -76,6 +78,7 @@
         android:onClick="policeButtonClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
+        android:background="@android:color/transparent"
         mapbox:srcCompat="@drawable/police" />
 
     <ImageButton
@@ -83,6 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="bellButtonClick"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageButton2"
         mapbox:srcCompat="@drawable/bell" />
@@ -92,6 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="conButtonClick"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
         app:layout_constraintStart_toEndOf="@+id/imageButton3"
         mapbox:srcCompat="@drawable/convenience_store" />
