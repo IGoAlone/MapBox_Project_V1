@@ -117,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        new JSONTask().execute("http://172.30.1.23:3000/cctv");
-        new JSONTask().execute("http://172.30.1.23:3000/bell");
-        new JSONTask().execute("http://172.30.1.23:3000/store");
-        new JSONTask().execute("http://172.30.1.23:3000/police");
+        new JSONTask().execute("http://192.168.219.150:3000/cctv");
+        new JSONTask().execute("http://192.168.219.150:3000/bell");
+        new JSONTask().execute("http://192.168.219.150:3000/store");
+        new JSONTask().execute("http://192.168.219.150:3000/police");
 
     }
 
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements
                 Type listType = new TypeToken<ArrayList<Cctv>>() {
                 }.getType();
                 List<Cctv> cctv = gson.fromJson(result, listType);
+                System.out.println(cctv.get(0).getLatitude());
                 //3331
             }
             else if(flag==1)
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(Style.LIGHT, new
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/nahyun/ck8qrxnfn0hwc1ioibio1rq0l"), new
                 Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
