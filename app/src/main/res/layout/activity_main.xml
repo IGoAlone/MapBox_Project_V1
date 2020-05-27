@@ -11,9 +11,7 @@
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="85dp"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintVertical_bias="0.0"
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent"
@@ -64,30 +62,32 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:onClick="cctvButtonClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/mapView"
+        android:layout_marginStart="52dp"
         android:background="@android:color/transparent"
+        android:onClick="cctvButtonClick"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintStart_toStartOf="@+id/mapView"
         mapbox:srcCompat="@drawable/cctv" />
 
     <ImageButton
         android:id="@+id/imageButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="policeButtonClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
+        android:onClick="policeButtonClick"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintStart_toEndOf="@+id/imageButton"
         mapbox:srcCompat="@drawable/police" />
 
     <ImageButton
         android:id="@+id/imageButton3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="bellButtonClick"
+        android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="bellButtonClick"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton2"
         mapbox:srcCompat="@drawable/bell" />
 
@@ -95,9 +95,10 @@
         android:id="@+id/imageButton4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="conButtonClick"
+        android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
+        android:onClick="conButtonClick"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton3"
         mapbox:srcCompat="@drawable/convenience_store" />
 

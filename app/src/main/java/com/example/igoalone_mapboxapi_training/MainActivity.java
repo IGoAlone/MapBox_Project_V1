@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -120,15 +122,17 @@ public class MainActivity extends AppCompatActivity implements
         Mapbox.getInstance(this, getString(R.string.access_token));
 
         setContentView(R.layout.activity_main);
+        //setContentView(findViewById(R.id.media_route_menu_item));
+
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        new JSONTask().execute("http://172.30.1.41:3000/cctv");
-        //new JSONTask().execute("http://172.30.1.41:3000/bell");
-        new JSONTask().execute("http://172.30.1.41:3000/store");
-        new JSONTask().execute("http://172.30.1.41:3000/police");
+        new JSONTask().execute("http://localhost:3000/cctv");
+        //new JSONTask().execute("http://localhost:3000/bell");
+        new JSONTask().execute("http://localhost:3000/store");
+        new JSONTask().execute("http://localhost:3000/police");
 
         ImageButton button = (ImageButton)findViewById(R.id.imageButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
 
                 Toast.makeText(MainActivity.this, "pppp", Toast.LENGTH_SHORT).show();
-                new JSONTask().execute("http://172.30.1.41:3000/bell");
+                new JSONTask().execute("http://localhost:3000/bell");
             }
         });
 
@@ -480,4 +484,24 @@ public class MainActivity extends AppCompatActivity implements
         mapView.onLowMemory();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbar_action, menu) ;
+
+        return true ;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.app_bar_search :
+                // TODO : process the click event for action_search item.
+                initSearchFab();
+                return true;
+            // ...
+            // ...
+            default :
+                return super.onOptionsItemSelected(item) ;
+        }
+    }
 }
