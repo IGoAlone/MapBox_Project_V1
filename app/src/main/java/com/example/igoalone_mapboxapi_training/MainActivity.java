@@ -491,17 +491,17 @@ public class MainActivity extends AppCompatActivity implements
         return true ;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.app_bar_search :
-                // TODO : process the click event for action_search item.
-                initSearchFab();
-                return true;
-            // ...
-            // ...
-            default :
-                return super.onOptionsItemSelected(item) ;
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.app_bar_search :
+//                // TODO : process the click event for action_search item.
+//                initSearchFab();
+//                return true;
+//            // ...
+//            // ...
+//            default :
+//                return super.onOptionsItemSelected(item) ;
+//        }
+//    }
 }
