@@ -26,6 +26,8 @@ import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -106,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements
     // variables for adding location layer
     private PermissionsManager permissionsManager;
     private LocationComponent locationComponent;
+    private LocationComponentActivationOptions locationComponentActivationOptions;
+    private LocationComponentOptions locationComponentOptions;
     // variables for calculating and drawing a route
     private DirectionsRoute currentRoute;
     private static final String TAG = "DirectionsActivity";
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
         cctvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.4:3000/cctv");
+                new JSONTask().execute("http://172.30.1.27:3000/cctv");
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
                 flag = 0;
             }
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
         policeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.4:3000/police");
+                new JSONTask().execute("http://172.30.1.27:3000/police");
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
                 flag = 3;
             }
@@ -184,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements
         bellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.4:3000/bell");
+                new JSONTask().execute("http://172.30.1.27:3000/bell");
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
                 flag = 1;
             }
@@ -195,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
         storeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.4:3000/store");
+                new JSONTask().execute("http://172.30.1.27:3000/store");
                 Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
                 flag = 2;
             }
@@ -577,10 +581,11 @@ public class MainActivity extends AppCompatActivity implements
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
         // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
-            // Activate the MapboxMap LocationComponent to show user location
-            // Adding in LocationComponentOptions is also an optional parameter
             locationComponent = mapboxMap.getLocationComponent();
-            locationComponent.activateLocationComponent(this, loadedMapStyle);
+            //locationComponent.activateLocationComponent(this, loadedMapStyle)
+            locationComponentOptions = LocationComponentOptions.builder(this).build();
+            locationComponentActivationOptions = new LocationComponentActivationOptions.Builder(this,loadedMapStyle).locationComponentOptions(locationComponentOptions).build();
+            locationComponent.activateLocationComponent(locationComponentActivationOptions);
             locationComponent.setLocationComponentEnabled(true);
             // Set the component's camera mode
             locationComponent.setCameraMode(CameraMode.TRACKING);
@@ -588,8 +593,10 @@ public class MainActivity extends AppCompatActivity implements
 
             // 사용자의 최종 위치 받아
             currentLocation = locationComponent.getLastKnownLocation();
-            currentLatitude = currentLocation.getLatitude();
-            currentLongitude = currentLocation.getLongitude();
+            //currentLatitude = currentLocation.getLatitude();
+            //currentLongitude = currentLocation.getLongitude();
+            currentLatitude = 37.283110;
+            currentLongitude = 127.044915;
 
         } else {
             permissionsManager = new PermissionsManager(this);
@@ -627,24 +634,6 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(myIntent);
     }
 
-    public void cctvButtonClick(View v) { // cctv
-        Toast.makeText(this, "cctv", Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent(this,Main2Activity.class);
-//        startActivity(intent);
-
-    }
-
-    public void policeButtonClick(View v) { // 경찰서
-
-    }
-
-    public void bellButtonClick(View v) { // 안전벨
-
-    }
-
-    public void conButtonClick(View v) { // 편의점
-
-    }
 
     @Override
     protected void onStart() {
@@ -694,18 +683,4 @@ public class MainActivity extends AppCompatActivity implements
 
         return true;
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.app_bar_search :
-//                // TODO : process the click event for action_search item.
-//                initSearchFab();
-//                return true;
-//            // ...
-//            // ...
-//            default :
-//                return super.onOptionsItemSelected(item) ;
-//        }
-//    }
 }
