@@ -2,8 +2,8 @@ package com.example.igoalone_mapboxapi_training.DAO;
 
 public class Store {
     String road_name;
-    float latitude;
-    float longitude;
+    double latitude;
+    double longitude;
 
     public String getRoad_name() {
         return road_name;
@@ -13,20 +13,25 @@ public class Store {
         this.road_name = road_name;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return "latitude : " + latitude + ", longitude : " + longitude;
     }
 
 }

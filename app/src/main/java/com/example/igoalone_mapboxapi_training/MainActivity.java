@@ -6,20 +6,24 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -70,7 +74,6 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 
 //서버 통신
 import android.os.AsyncTask;
-import android.widget.TextView;
 
 import com.example.igoalone_mapboxapi_training.DAO.Bell;
 import com.example.igoalone_mapboxapi_training.DAO.Cctv;
@@ -88,8 +91,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
+//버튼 클릭 이벤트마다 다르게 요청보냄
+//요청 파라미터: 사용자 위도 / 안전요소
+//받아와서 마커 띄움
 
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback, PermissionsListener {
@@ -116,6 +121,23 @@ public class MainActivity extends AppCompatActivity implements
 
     int flag = 0;
 
+    private Location currentLocation;
+    private double currentLatitude;
+    private double currentLongitude;
+
+    // 안전요소 flag
+    private boolean cctvFlag = false;
+    private boolean bellFlag = false;
+    private boolean storeFlag = false;
+    private boolean polFlag = false;
+
+    //
+    //List<Bell> bell;
+//    private List<Cctv> cctv = new List<Cctv>();
+//    private List<Bell> bell;
+//    private List<Store> store;
+//    private List<Police> police;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,31 +151,69 @@ public class MainActivity extends AppCompatActivity implements
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        new JSONTask().execute("http://localhost:3000/cctv");
-        //new JSONTask().execute("http://localhost:3000/bell");
-        new JSONTask().execute("http://localhost:3000/store");
-        new JSONTask().execute("http://localhost:3000/police");
 
-        ImageButton button = (ImageButton)findViewById(R.id.imageButton);
-        button.setOnClickListener(new View.OnClickListener() {
+
+        /**
+         * 버튼 별 task 수행
+         */
+
+        // cctv button
+        ImageButton cctvButton = findViewById(R.id.imageButton);
+        cctvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(MainActivity.this, "pppp", Toast.LENGTH_SHORT).show();
-                new JSONTask().execute("http://localhost:3000/bell");
+                new JSONTask().execute("http://172.30.1.4:3000/cctv");
+                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+                flag = 0;
             }
         });
 
+        // police button
+        ImageButton policeButton = findViewById(R.id.imageButton2);
+        policeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new JSONTask().execute("http://172.30.1.4:3000/police");
+                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+                flag = 3;
+            }
+        });
+
+        // bell button
+        ImageButton bellButton = findViewById(R.id.imageButton3);
+        bellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new JSONTask().execute("http://172.30.1.4:3000/bell");
+                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+                flag = 1;
+            }
+        });
+
+        // store button
+        ImageButton storeButton = findViewById(R.id.imageButton4);
+        storeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new JSONTask().execute("http://172.30.1.4:3000/store");
+                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+                flag = 2;
+            }
+        });
     }
 
     public class JSONTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... urls) {
+            System.out.println("jsontask in method");
 
             HttpURLConnection con = null;
             BufferedReader reader = null;
             try {
-                URL url = new URL(urls[0]);
+
+                URL url = new URL(urls[0] + "?" + "latitude=" + currentLatitude + "&" + "longitude=" + currentLongitude); // 쿼리를 노드서버에 전달
+
+                System.out.println("url : " + url);
                 con = (HttpURLConnection) url.openConnection();
                 con.connect();
                 InputStream stream = con.getInputStream();
@@ -180,40 +240,177 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(String result) { // 노드서버가 디비로부터 데이터 받아서 일로 갖고옴
             super.onPostExecute(result);
-            //    jsonView.setText(result);
 
-            Gson gson = new Gson();
+            //Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+
+            System.out.println("result : " + result);
+
+            Gson gson = new Gson(); // parsing
+
+            ImageButton removeMarkerButton = findViewById(R.id.imageButton5);
+            removeMarkerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mapboxMap.clear();
+                }
+            });
+
+            /**
+             * CCTV
+             */
 
             if (flag == 0) {
+                System.out.println("flag0");
                 Type listType = new TypeToken<ArrayList<Cctv>>() {
                 }.getType();
                 List<Cctv> cctv = gson.fromJson(result, listType);
+                System.out.println("나는야 CCTV : " + cctv.toString());
+                //mapboxMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)));
+
+                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
+                Icon icon = iconFactory.fromResource(R.drawable.cctv);
+
+                int i = 0;
+
+                if (cctvFlag) {
+
+                    //mapboxMap.clear();
+                    //mapboxMap.removeMarker(cctvMarkerList.get(0));
+                    //cctvMarkerList.clear();
+                    cctvFlag = false;
+                } else {
+
+
+                    for (Cctv c : cctv) {
+                        double tmpLat = cctv.get(i).getLatitude();
+                        double tmpLon = cctv.get(i).getLongitude();
+
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+
+                        i++;
+                    }
+
+                    cctvFlag = true;
+                }
+
+
                 //3331
+
+                /**
+                 * Bell
+                 */
+
             } else if (flag == 1) {
+                System.out.println("flag1");
                 Type listType = new TypeToken<ArrayList<Bell>>() {
                 }.getType();
                 List<Bell> bell = gson.fromJson(result, listType);
+                System.out.println("나는야 Bell : " + bell.toString());
+
+                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
+                Icon icon = iconFactory.fromResource(R.drawable.bell);
+
+                int i = 0;
+
+                if (bellFlag) {
+
+                    //mapboxMap.clear();
+                    //mapboxMap.removeMarker();
+                    bellFlag = false;
+                } else {
+                    for (Bell b : bell) {
+
+                        double tmpLat = bell.get(i).getLatitude();
+                        double tmpLon = bell.get(i).getLongitude();
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+                        i++;
+                    }
+                    bellFlag = true;
+                }
+
                 //118
+
+                /**
+                 * Store
+                 */
+
             } else if (flag == 2) {
+                System.out.println("flag2");
                 Type listType = new TypeToken<ArrayList<Store>>() {
                 }.getType();
                 List<Store> store = gson.fromJson(result, listType);
+                System.out.println("나는야 store : " + store.toString());
+
+                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
+                Icon icon = iconFactory.fromResource(R.drawable.convenience_store);
+
+                int i = 0;
+
+                if (storeFlag) {
+
+                    //mapboxMap.clear();
+                    //mapboxMap.removeMarker();
+                    storeFlag = false;
+                } else {
+                    for (Store s : store) {
+
+                        double tmpLat = store.get(i).getLatitude();
+                        double tmpLon = store.get(i).getLongitude();
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+                        i++;
+                    }
+                    storeFlag = true;
+                }
+
                 //233
+
+                /**
+                 * Police
+                 */
+
             } else if (flag == 3) {
+                System.out.println("flag3");
                 Type listType = new TypeToken<ArrayList<Police>>() {
                 }.getType();
                 List<Police> police = gson.fromJson(result, listType);
+                System.out.println("나는야 police : " + police.toString());
+
+                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
+                Icon icon = iconFactory.fromResource(R.drawable.police);
+
+                int i = 0;
+
+                if (polFlag) {
+
+                    //mapboxMap.clear();
+                    //mapboxMap.removeMarker();
+                    polFlag = false;
+                } else {
+                    for (Police p : police) {
+
+                        double tmpLat = police.get(i).getLatitude();
+                        double tmpLon = police.get(i).getLongitude();
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+                        i++;
+                    }
+                    polFlag = true;
+                }
+
                 //25
             }
-            flag++;
+            //flag++;
         }
     }
 
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
+
+        CameraPosition  position = new CameraPosition.Builder().zoom(20).build();
+        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+
         mapboxMap.setStyle(Style.LIGHT, new
                 Style.OnStyleLoaded() {
                     @Override
@@ -229,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements
                         setupLayer(style);
 
                         enableLocationComponent(style);
+
 
                         addDestinationIconSymbolLayer(style);
 
@@ -266,6 +464,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
+
 
     private void setUpSource(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addSource(new GeoJsonSource(geojsonSourceLayerId));
@@ -387,6 +586,11 @@ public class MainActivity extends AppCompatActivity implements
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
+            // 사용자의 최종 위치 받아
+            currentLocation = locationComponent.getLastKnownLocation();
+            currentLatitude = currentLocation.getLatitude();
+            currentLongitude = currentLocation.getLongitude();
+
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
@@ -486,9 +690,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actionbar_action, menu) ;
+        getMenuInflater().inflate(R.menu.actionbar_action, menu);
 
-        return true ;
+        return true;
     }
 
 //    @Override
