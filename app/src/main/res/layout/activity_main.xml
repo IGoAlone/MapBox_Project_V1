@@ -11,56 +11,27 @@
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.0"
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintStart_toStartOf="parent"
         mapbox:layout_constraintTop_toTopOf="parent"
         mapbox:mapbox_cameraTargetLat="36.16266"
         mapbox:mapbox_cameraTargetLng="-86.78160"
-        mapbox:mapbox_cameraZoom="12">
+        mapbox:mapbox_cameraZoom="12"></com.mapbox.mapboxsdk.maps.MapView>
 
-
-    </com.mapbox.mapboxsdk.maps.MapView>
-
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:enabled="false"
-        android:text="Start navigation"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_location_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:tint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintStart_toStartOf="@+id/mapView"
-        app:layout_constraintTop_toTopOf="@+id/mapView"
-        app:srcCompat="@android:drawable/ic_search_category_default" />
-
-    <ImageButton
-        android:id="@+id/button"
+    <ImageView
+        android:id="@+id/sosButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="end|bottom"
         android:background="@android:color/transparent"
-        android:backgroundTint="@color/mapboxPink"
-
-
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        app:layout_constraintTop_toTopOf="@+id/mapView"
         android:onClick="sosButtonClick"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/fab_location_search"
         app:layout_constraintVertical_bias="0.01999998"
         mapbox:srcCompat="@drawable/sos" />
 
@@ -70,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
-        android:onClick="cctvButtonClick"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toStartOf="@+id/mapView"
         mapbox:srcCompat="@drawable/cctv" />
@@ -81,7 +51,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
-        android:onClick="policeButtonClick"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
         mapbox:srcCompat="@drawable/police" />
@@ -92,7 +61,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
-        android:onClick="bellButtonClick"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton5"
         mapbox:srcCompat="@drawable/bell" />
@@ -103,7 +71,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
-        android:onClick="conButtonClick"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton3"
         mapbox:srcCompat="@drawable/convenience_store" />
@@ -115,7 +82,6 @@
         android:layout_marginStart="16dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton2"
         mapbox:srcCompat="@drawable/eraser" />

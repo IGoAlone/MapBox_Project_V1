@@ -1,22 +1,19 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">#071656</item>
+        <item name="colorPrimaryDark">#071656</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!-- No Title Bar-->
 
+        <item name="android:textViewStyle">@style/customTextViewFontStyle</item>
+        <item name="android:buttonStyle">@style/customButtonFontStyle</item>
     </style>
 
     <style name="NavigationMapRoute">
-        <!-- Colors -->
         <item name="routeColor">@color/mapboxBlue</item>
         <item name="routeModerateCongestionColor">@color/mapboxBlue</item>
         <item name="routeSevereCongestionColor">@color/mapboxBlue</item>
         <item name="routeShieldColor">@color/mapboxWhite</item>
-        <!-- Scales -->
         <item name="routeScale">1.0</item>
     </style>
 
@@ -26,7 +23,14 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="customTextViewFontStyle" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/custom_font_family</item>
+    </style>
+
+    <style name="customButtonFontStyle" parent="@android:style/Widget.DeviceDefault.Button.Borderless">
+        <item name="android:fontFamily">@font/custom_font_family</item>
+    </style>
 
 </resources>

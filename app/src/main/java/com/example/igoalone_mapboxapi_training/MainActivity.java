@@ -4,20 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -33,6 +36,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 
+import java.util.HashMap;
 import java.util.List;
 
 // 위치
@@ -54,7 +58,6 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacem
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
 // 경로계산
-import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
@@ -84,6 +87,11 @@ import com.example.igoalone_mapboxapi_training.DAO.Store;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
+
+import org.json.simple.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,27 +102,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-//버튼 클릭 이벤트마다 다르게 요청보냄
-//요청 파라미터: 사용자 위도 / 안전요소
-//받아와서 마커 띄움
-
 public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback, PermissionsListener {
-    //네비게이션 기능
 
-    // variables for adding location layer
     private MapView mapView;
     private MapboxMap mapboxMap;
-    // variables for adding location layer
     private PermissionsManager permissionsManager;
     private LocationComponent locationComponent;
     private LocationComponentActivationOptions locationComponentActivationOptions;
     private LocationComponentOptions locationComponentOptions;
-    // variables for calculating and drawing a route
     private DirectionsRoute currentRoute;
     private static final String TAG = "DirectionsActivity";
     private NavigationMapRoute navigationMapRoute;
-    // variables needed to initialize navigation
     private Button button;
 
     //목적지 검색기능
@@ -123,94 +122,70 @@ public class MainActivity extends AppCompatActivity implements
     private String geojsonSourceLayerId = "geojsonSourceLayerId";
     private String symbolIconId = "symbolIconId";
 
-    int flag = 0;
-
     private Location currentLocation;
     private double currentLatitude;
     private double currentLongitude;
 
     // 안전요소 flag
+    int flag = 0;
     private boolean cctvFlag = false;
     private boolean bellFlag = false;
     private boolean storeFlag = false;
     private boolean polFlag = false;
 
-    //
-    //List<Bell> bell;
-//    private List<Cctv> cctv = new List<Cctv>();
-//    private List<Bell> bell;
-//    private List<Store> store;
-//    private List<Police> police;
+    private String currentAddress = null;
+
+    final String api_key = "NCSEKYAJD5OM5SXA";
+    final String api_secret = "LU37HTRDDYKX7RYNFFATW5IVLA9K6R1B";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mapbox.getInstance(this, getString(R.string.access_token));
+        Mapbox.getInstance(this,getString(R.string.access_token));
 
         setContentView(R.layout.activity_main);
-        //setContentView(findViewById(R.id.media_route_menu_item));
-
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
 
-
-        /**
-         * 버튼 별 task 수행
-         */
-
         // cctv button
         ImageButton cctvButton = findViewById(R.id.imageButton);
-        cctvButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.27:3000/cctv");
-                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
-                flag = 0;
-            }
+        cctvButton.setOnClickListener(v -> {
+            new markerTask().execute("http://172.30.1.27:3000/cctv");
+            Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+            flag = 0;
         });
 
         // police button
         ImageButton policeButton = findViewById(R.id.imageButton2);
-        policeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.27:3000/police");
-                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
-                flag = 3;
-            }
+        policeButton.setOnClickListener(v -> {
+            new markerTask().execute("http://172.30.1.27:3000/police");
+            Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+            flag = 3;
         });
 
         // bell button
         ImageButton bellButton = findViewById(R.id.imageButton3);
-        bellButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.27:3000/bell");
-                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
-                flag = 1;
-            }
+        bellButton.setOnClickListener(v -> {
+            new markerTask().execute("http://172.30.1.27:3000/bell");
+            Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+            flag = 1;
         });
 
         // store button
         ImageButton storeButton = findViewById(R.id.imageButton4);
-        storeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new JSONTask().execute("http://172.30.1.27:3000/store");
-                Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
-                flag = 2;
-            }
+        storeButton.setOnClickListener(v -> {
+            new markerTask().execute("http://172.30.1.27:3000/store");
+            Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
+            flag = 2;
         });
     }
 
-    public class JSONTask extends AsyncTask<String, String, String> {
+    public class markerTask extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... urls) {
-            System.out.println("jsontask in method");
-
             HttpURLConnection con = null;
             BufferedReader reader = null;
             try {
@@ -247,164 +222,88 @@ public class MainActivity extends AppCompatActivity implements
         protected void onPostExecute(String result) { // 노드서버가 디비로부터 데이터 받아서 일로 갖고옴
             super.onPostExecute(result);
 
-            //Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
-
             System.out.println("result : " + result);
 
             Gson gson = new Gson(); // parsing
 
             ImageButton removeMarkerButton = findViewById(R.id.imageButton5);
-            removeMarkerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mapboxMap.clear();
-                }
-            });
+            removeMarkerButton.setOnClickListener(v -> mapboxMap.clear());
 
-            /**
-             * CCTV
-             */
-
-            if (flag == 0) {
-                System.out.println("flag0");
+            if (flag == 0) { //3331
                 Type listType = new TypeToken<ArrayList<Cctv>>() {
                 }.getType();
                 List<Cctv> cctv = gson.fromJson(result, listType);
-                System.out.println("나는야 CCTV : " + cctv.toString());
-                //mapboxMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)));
 
-                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.cctv);
-
-                int i = 0;
+//                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
+//                Icon icon = iconFactory.fromResource(R.drawable.soo_cctv);
+                Bitmap cctvMarker = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.soo_cctv);
+                cctvMarker = Bitmap.createScaledBitmap(cctvMarker,125,200,true);
 
                 if (cctvFlag) {
-
-                    //mapboxMap.clear();
-                    //mapboxMap.removeMarker(cctvMarkerList.get(0));
-                    //cctvMarkerList.clear();
                     cctvFlag = false;
                 } else {
-
-
-                    for (Cctv c : cctv) {
+                    for (int i=0;i<cctv.size();i++) {
                         double tmpLat = cctv.get(i).getLatitude();
                         double tmpLon = cctv.get(i).getLongitude();
-
-                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
-
-                        i++;
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(IconFactory.getInstance(MainActivity.this).fromBitmap(cctvMarker)));
                     }
-
                     cctvFlag = true;
                 }
-
-
-                //3331
-
-                /**
-                 * Bell
-                 */
-
-            } else if (flag == 1) {
-                System.out.println("flag1");
+            } else if (flag == 1) {//118
                 Type listType = new TypeToken<ArrayList<Bell>>() {
                 }.getType();
                 List<Bell> bell = gson.fromJson(result, listType);
-                System.out.println("나는야 Bell : " + bell.toString());
 
                 IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.bell);
-
-                int i = 0;
+                Icon icon = iconFactory.fromResource(R.drawable.soo_bell);
 
                 if (bellFlag) {
-
-                    //mapboxMap.clear();
-                    //mapboxMap.removeMarker();
                     bellFlag = false;
                 } else {
-                    for (Bell b : bell) {
-
+                    for (int i=0;i<bell.size();i++) {
                         double tmpLat = bell.get(i).getLatitude();
                         double tmpLon = bell.get(i).getLongitude();
                         mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
-                        i++;
                     }
                     bellFlag = true;
                 }
-
-                //118
-
-                /**
-                 * Store
-                 */
-
-            } else if (flag == 2) {
-                System.out.println("flag2");
+            } else if (flag == 2) {//233
                 Type listType = new TypeToken<ArrayList<Store>>() {
                 }.getType();
                 List<Store> store = gson.fromJson(result, listType);
-                System.out.println("나는야 store : " + store.toString());
 
                 IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.convenience_store);
-
-                int i = 0;
+                Icon icon = iconFactory.fromResource(R.drawable.soo_conveni);
 
                 if (storeFlag) {
-
-                    //mapboxMap.clear();
-                    //mapboxMap.removeMarker();
                     storeFlag = false;
                 } else {
-                    for (Store s : store) {
-
+                    for (int i=0;i<store.size();i++) {
                         double tmpLat = store.get(i).getLatitude();
                         double tmpLon = store.get(i).getLongitude();
                         mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
-                        i++;
                     }
                     storeFlag = true;
                 }
-
-                //233
-
-                /**
-                 * Police
-                 */
-
-            } else if (flag == 3) {
-                System.out.println("flag3");
+            } else if (flag == 3) {//25
                 Type listType = new TypeToken<ArrayList<Police>>() {
                 }.getType();
                 List<Police> police = gson.fromJson(result, listType);
-                System.out.println("나는야 police : " + police.toString());
 
                 IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.police);
-
-                int i = 0;
+                Icon icon = iconFactory.fromResource(R.drawable.soo_police);
 
                 if (polFlag) {
-
-                    //mapboxMap.clear();
-                    //mapboxMap.removeMarker();
                     polFlag = false;
                 } else {
-                    for (Police p : police) {
-
+                    for (int i=0;i<police.size();i++) {
                         double tmpLat = police.get(i).getLatitude();
                         double tmpLon = police.get(i).getLongitude();
                         mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
-                        i++;
                     }
                     polFlag = true;
                 }
-
-                //25
             }
-            //flag++;
         }
     }
 
@@ -412,61 +311,38 @@ public class MainActivity extends AppCompatActivity implements
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
 
-        CameraPosition  position = new CameraPosition.Builder().zoom(20).build();
+        CameraPosition position = new CameraPosition.Builder().zoom(20).build();
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
 
-        mapboxMap.setStyle(Style.LIGHT, new
-                Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        initSearchFab();
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/nahyun/ck8qrxnfn0hwc1ioibio1rq0l/draft"), new Style.OnStyleLoaded() {
+            @Override
+            public void onStyleLoaded(@NonNull Style style) {
 
-                        style.addImage(symbolIconId, BitmapFactory.decodeResource(
-                                MainActivity.this.getResources(), R.drawable.igoalone_marker));
-                        // Create an empty GeoJSON source using the empty feature collection
-                        setUpSource(style);
+                setUpSource(style);
+                //검색된 위치의 피처 좌표를 표시하기 위해 새 심볼 레이어를 설정
+                enableLocationComponent(style);
+                Bitmap destination = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.mapbox_marker_icon_default);
+                destination = Bitmap.createScaledBitmap(destination,125,200,true);
+                style.addImage(symbolIconId,destination);
+                setupLayer(style);
 
-                        //검색된 위치의 피처 좌표를 표시하기 위해 새 심볼 레이어를 설정
-                        setupLayer(style);
-
-                        enableLocationComponent(style);
-
-
-                        addDestinationIconSymbolLayer(style);
-
-                        button = findViewById(R.id.startButton);
-                        button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                boolean simulateRoute = true;
-                                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                                        .directionsRoute(currentRoute)
-                                        .shouldSimulateRoute(simulateRoute)
-                                        .build();
-
-                                //네비게이션 호출 부분 없앰
-                                // NavigationLauncher.startNavigation(MainActivity.this, options);
-                            }
-                        });
-                    }
-                });
+            }
+        });
     }
+
 
     //검색 누르면 화면 전환
     private void initSearchFab() {
-        findViewById(R.id.fab_location_search).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new PlaceAutocomplete.IntentBuilder()
-                        .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
-                        .placeOptions(PlaceOptions.builder()
-                                .backgroundColor(Color.parseColor("#EEEEEE"))
-                                .limit(10)
-                                .build(PlaceOptions.MODE_CARDS))
-                        .build(MainActivity.this);
-                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
-            }
-        });
+       // findViewById(R.id.fab_location_search).setOnClickListener(view -> {
+            Intent intent = new PlaceAutocomplete.IntentBuilder()
+                    .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
+                    .placeOptions(PlaceOptions.builder()
+                            .backgroundColor(Color.parseColor("#EEEEEE"))
+                            .limit(10)
+                            .build(PlaceOptions.MODE_CARDS))
+                    .build(MainActivity.this);
+            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+    //    });
     }
 
 
@@ -486,12 +362,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
-
-            // Retrieve selected location's CarmenFeature
             CarmenFeature selectedCarmenFeature = PlaceAutocomplete.getPlace(data);
-            // Create a new FeatureCollection and add a new Feature to it using selectedCarmenFeature above.
-            // Then retrieve and update the source designated for showing a selected location's symbol layer icon
-
             if (mapboxMap != null) {
                 Style style = mapboxMap.getStyle();
                 if (style != null) {
@@ -501,7 +372,6 @@ public class MainActivity extends AppCompatActivity implements
                                 new Feature[]{Feature.fromJson(selectedCarmenFeature.toJson())}));
                     }
 
-                    // Move map camera to the selected location
                     mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(((Point) selectedCarmenFeature.geometry()).latitude(),
@@ -516,21 +386,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
-
-    private void addDestinationIconSymbolLayer(@NonNull Style loadedMapStyle) {
-        loadedMapStyle.addImage("destination-icon-id",
-                BitmapFactory.decodeResource(this.getResources(), R.drawable.mapbox_marker_icon_default));
-        GeoJsonSource geoJsonSource = new GeoJsonSource("destination-source-id");
-        loadedMapStyle.addSource(geoJsonSource);
-        SymbolLayer destinationSymbolLayer = new SymbolLayer("destination-symbol-layer-id", "destination-source-id");
-        destinationSymbolLayer.withProperties(
-                iconImage("destination-icon-id"),
-                iconAllowOverlap(true),
-                iconIgnorePlacement(true)
-        );
-        loadedMapStyle.addLayer(destinationSymbolLayer);
-    }
-
 
     public boolean set_destination_route(@NonNull LatLng point) {
 
@@ -561,7 +416,6 @@ public class MainActivity extends AppCompatActivity implements
 
                         currentRoute = response.body().routes().get(0);
 
-                        // Draw the route on the map
                         if (navigationMapRoute != null) {
                             navigationMapRoute.removeRoute();
                         } else {
@@ -579,24 +433,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @SuppressWarnings({"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
-        // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(this)) {
             locationComponent = mapboxMap.getLocationComponent();
-            //locationComponent.activateLocationComponent(this, loadedMapStyle)
             locationComponentOptions = LocationComponentOptions.builder(this).build();
             locationComponentActivationOptions = new LocationComponentActivationOptions.Builder(this,loadedMapStyle).locationComponentOptions(locationComponentOptions).build();
             locationComponent.activateLocationComponent(locationComponentActivationOptions);
             locationComponent.setLocationComponentEnabled(true);
-            // Set the component's camera mode
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
-            // 사용자의 최종 위치 받아
             currentLocation = locationComponent.getLastKnownLocation();
-            //currentLatitude = currentLocation.getLatitude();
-            //currentLongitude = currentLocation.getLongitude();
-            currentLatitude = 37.283110;
-            currentLongitude = 127.044915;
+            currentLatitude = currentLocation.getLatitude();
+            currentLongitude = currentLocation.getLongitude();
+            //currentLatitude = 37.283110;
+            //currentLongitude = 127.044915;
 
         } else {
             permissionsManager = new PermissionsManager(this);
@@ -631,7 +481,45 @@ public class MainActivity extends AppCompatActivity implements
     // Button 관련 메서드
     public void sosButtonClick(View v) {
         Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112"));
+        smsSend("01045443837");
         startActivity(myIntent);
+    }
+
+    public void smsSend(String phoneNum) {
+        AsyncTask<String, Void, Void> asyncTask = new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... numbers) {
+                Message coolsms = new Message(api_key, api_secret);
+                HashMap<String, String> params = new HashMap<String, String>();
+                String currentPoint = null;
+                try {
+                    currentPoint = pointToAddress(currentLatitude,currentLongitude);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                params.put("to", numbers[0]);
+                params.put("from", "01045443837"); //사전에 사이트에서 번호를 인증하고 등록하여야 함
+                params.put("type", "SMS");
+                    params.put("text", "[나혼자간다 발신] 긴급 상황 입니다. 사용자 현재 위치:"+currentPoint); //메시지 내용
+                params.put("app_version", "test app 1.2");
+                try { JSONObject obj = (JSONObject)coolsms.send(params);
+                    System.out.println(obj.toString()); //전송 결과 출력
+                } catch (CoolsmsException e) {
+                    System.out.println(e.getMessage());
+                    System.out.println(e.getCode());
+                }
+                return null;
+            }
+        }; asyncTask.execute(phoneNum);
+
+    }
+
+    public String pointToAddress(Double latitude,Double longitude) throws IOException {
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> address;
+        address = geocoder.getFromLocation(latitude,longitude,
+                1);
+        return address.get(0).getAddressLine(0);
     }
 
 
@@ -678,9 +566,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actionbar_action, menu);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search :
+                initSearchFab();
+                return true ;
+            default :
+                return super.onOptionsItemSelected(item) ;
+        }
+    }
 
-        return true;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.app_bar_action, menu) ;
+        return true ;
     }
 }
