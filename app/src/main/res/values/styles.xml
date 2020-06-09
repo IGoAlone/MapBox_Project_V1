@@ -3,7 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#071656</item>
         <item name="colorPrimaryDark">#071656</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">#E8E1A4</item>
 
         <item name="android:textViewStyle">@style/customTextViewFontStyle</item>
         <item name="android:buttonStyle">@style/customButtonFontStyle</item>

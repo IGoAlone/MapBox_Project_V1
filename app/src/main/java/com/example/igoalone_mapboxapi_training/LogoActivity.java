@@ -41,7 +41,7 @@ public class LogoActivity extends AppCompatActivity {
         hand.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent loadIntent = new Intent(LogoActivity.this, MainActivity.class);
+                Intent loadIntent = new Intent(LogoActivity.this, RegisterPhoneNum.class);
                 startActivity(loadIntent);
                 finish();
             }

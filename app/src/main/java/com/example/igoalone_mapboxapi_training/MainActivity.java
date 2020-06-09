@@ -137,12 +137,14 @@ public class MainActivity extends AppCompatActivity implements
 
     final String api_key = "NCSEKYAJD5OM5SXA";
     final String api_secret = "LU37HTRDDYKX7RYNFFATW5IVLA9K6R1B";
+    Friend friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this,getString(R.string.access_token));
 
+        friend = getIntent().getParcelableExtra("friend");
         setContentView(R.layout.activity_main);
 
         mapView = findViewById(R.id.mapView);
@@ -481,14 +483,14 @@ public class MainActivity extends AppCompatActivity implements
     // Button 관련 메서드
     public void sosButtonClick(View v) {
         Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:112"));
-        smsSend("01045443837");
+        smsSend(friend);
         startActivity(myIntent);
     }
 
-    public void smsSend(String phoneNum) {
-        AsyncTask<String, Void, Void> asyncTask = new AsyncTask<String, Void, Void>() {
+    public void smsSend(Friend friend) {
+        AsyncTask<Friend, Void, Void> asyncTask = new AsyncTask<Friend, Void, Void>() {
             @Override
-            protected Void doInBackground(String... numbers) {
+            protected Void doInBackground(Friend... friends) {
                 Message coolsms = new Message(api_key, api_secret);
                 HashMap<String, String> params = new HashMap<String, String>();
                 String currentPoint = null;
@@ -497,10 +499,10 @@ public class MainActivity extends AppCompatActivity implements
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                params.put("to", numbers[0]);
-                params.put("from", "01045443837"); //사전에 사이트에서 번호를 인증하고 등록하여야 함
+                params.put("to", friends[0].getNumber());
+                params.put("from","01045443837"); //사전에 사이트에서 번호를 인증하고 등록하여야 함
                 params.put("type", "SMS");
-                    params.put("text", "[나혼자간다 발신] 긴급 상황 입니다. 사용자 현재 위치:"+currentPoint); //메시지 내용
+                params.put("text", "[나혼자간다] "+"긴급 상황입니다. 현재 위치:"+currentPoint); //메시지 내용
                 params.put("app_version", "test app 1.2");
                 try { JSONObject obj = (JSONObject)coolsms.send(params);
                     System.out.println(obj.toString()); //전송 결과 출력
@@ -510,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 return null;
             }
-        }; asyncTask.execute(phoneNum);
+        }; asyncTask.execute(friend);
 
     }
 
