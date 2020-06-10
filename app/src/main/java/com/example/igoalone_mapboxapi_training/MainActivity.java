@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements
 
             Gson gson = new Gson(); // parsing
 
-            ImageButton removeMarkerButton = findViewById(R.id.imageButton5);
+            Button removeMarkerButton = findViewById(R.id.imageButton5);
             removeMarkerButton.setOnClickListener(v -> mapboxMap.clear());
 
             if (flag == 0) { //3331
@@ -234,8 +234,6 @@ public class MainActivity extends AppCompatActivity implements
                 }.getType();
                 List<Cctv> cctv = gson.fromJson(result, listType);
 
-//                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-//                Icon icon = iconFactory.fromResource(R.drawable.soo_cctv);
                 Bitmap cctvMarker = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.soo_cctv);
                 cctvMarker = Bitmap.createScaledBitmap(cctvMarker,125,200,true);
 
@@ -254,8 +252,8 @@ public class MainActivity extends AppCompatActivity implements
                 }.getType();
                 List<Bell> bell = gson.fromJson(result, listType);
 
-                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.soo_bell);
+                Bitmap bellMarker = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.soo_bell);
+                bellMarker = Bitmap.createScaledBitmap(bellMarker,125,200,true);
 
                 if (bellFlag) {
                     bellFlag = false;
@@ -263,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements
                     for (int i=0;i<bell.size();i++) {
                         double tmpLat = bell.get(i).getLatitude();
                         double tmpLon = bell.get(i).getLongitude();
-                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(IconFactory.getInstance(MainActivity.this).fromBitmap(bellMarker)));
                     }
                     bellFlag = true;
                 }
@@ -272,8 +270,8 @@ public class MainActivity extends AppCompatActivity implements
                 }.getType();
                 List<Store> store = gson.fromJson(result, listType);
 
-                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.convenience_store);
+                Bitmap storeMarker = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.soo_conveni);
+                storeMarker = Bitmap.createScaledBitmap(storeMarker,125,200,true);
 
                 if (storeFlag) {
                     storeFlag = false;
@@ -281,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements
                     for (int i=0;i<store.size();i++) {
                         double tmpLat = store.get(i).getLatitude();
                         double tmpLon = store.get(i).getLongitude();
-                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(IconFactory.getInstance(MainActivity.this).fromBitmap(storeMarker)));
                     }
                     storeFlag = true;
                 }
@@ -290,8 +288,8 @@ public class MainActivity extends AppCompatActivity implements
                 }.getType();
                 List<Police> police = gson.fromJson(result, listType);
 
-                IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.soo_police);
+                Bitmap policeMarker = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.soo_police);
+                policeMarker = Bitmap.createScaledBitmap(policeMarker,125,200,true);
 
                 if (polFlag) {
                     polFlag = false;
@@ -299,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements
                     for (int i=0;i<police.size();i++) {
                         double tmpLat = police.get(i).getLatitude();
                         double tmpLon = police.get(i).getLongitude();
-                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(icon));
+                        mapboxMap.addMarker(new MarkerOptions().position(new LatLng(tmpLat, tmpLon)).icon(IconFactory.getInstance(MainActivity.this).fromBitmap(policeMarker)));
                     }
                     polFlag = true;
                 }
@@ -317,7 +315,6 @@ public class MainActivity extends AppCompatActivity implements
         mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/nahyun/ck8qrxnfn0hwc1ioibio1rq0l/draft"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
-
                 setUpSource(style);
                 //검색된 위치의 피처 좌표를 표시하기 위해 새 심볼 레이어를 설정
                 enableLocationComponent(style);
@@ -443,10 +440,10 @@ public class MainActivity extends AppCompatActivity implements
             locationComponent.setRenderMode(RenderMode.COMPASS);
 
             currentLocation = locationComponent.getLastKnownLocation();
-            currentLatitude = currentLocation.getLatitude();
-            currentLongitude = currentLocation.getLongitude();
-            //currentLatitude = 37.283110;
-            //currentLongitude = 127.044915;
+            //currentLatitude = currentLocation.getLatitude();
+            //currentLongitude = currentLocation.getLongitude();
+            currentLatitude = 37.278824;
+            currentLongitude = 127.042112;
 
         } else {
             permissionsManager = new PermissionsManager(this);
@@ -518,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements
         Geocoder geocoder = new Geocoder(this);
         List<Address> address;
         address = geocoder.getFromLocation(latitude,longitude,
-                1);
+                10);
         return address.get(0).getAddressLine(0);
     }
 
