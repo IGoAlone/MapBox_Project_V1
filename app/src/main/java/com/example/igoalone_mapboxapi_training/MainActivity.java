@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements
         // cctv button
         ImageButton cctvButton = findViewById(R.id.imageButton);
         cctvButton.setOnClickListener(v -> {
-            new markerTask().execute("http://172.30.1.27:3000/cctv");
+            new markerTask().execute("http://172.20.10.3:3000/cctv");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
             flag = 0;
         });
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
         // police button
         ImageButton policeButton = findViewById(R.id.imageButton2);
         policeButton.setOnClickListener(v -> {
-            new markerTask().execute("http://172.30.1.27:3000/police");
+            new markerTask().execute("http://172.20.10.3:3000/police");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
             flag = 3;
         });
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
         // bell button
         ImageButton bellButton = findViewById(R.id.imageButton3);
         bellButton.setOnClickListener(v -> {
-            new markerTask().execute("http://172.30.1.27:3000/bell");
+            new markerTask().execute("http://172.20.10.3:3000/bell");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
             flag = 1;
         });
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
         // store button
         ImageButton storeButton = findViewById(R.id.imageButton4);
         storeButton.setOnClickListener(v -> {
-            new markerTask().execute("http://172.30.1.27:3000/store");
+            new markerTask().execute("http://172.20.10.3:3000/store");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
             flag = 2;
         });
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
                 List<Store> store = gson.fromJson(result, listType);
 
                 IconFactory iconFactory = IconFactory.getInstance(MainActivity.this);
-                Icon icon = iconFactory.fromResource(R.drawable.soo_conveni);
+                Icon icon = iconFactory.fromResource(R.drawable.convenience_store);
 
                 if (storeFlag) {
                     storeFlag = false;
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements
                 //검색된 위치의 피처 좌표를 표시하기 위해 새 심볼 레이어를 설정
                 enableLocationComponent(style);
                 Bitmap destination = BitmapFactory.decodeResource(MainActivity.this.getResources(), R.drawable.mapbox_marker_icon_default);
-                destination = Bitmap.createScaledBitmap(destination,125,200,true);
+                destination = Bitmap.createScaledBitmap(destination,70,150,true);
                 style.addImage(symbolIconId,destination);
                 setupLayer(style);
 
