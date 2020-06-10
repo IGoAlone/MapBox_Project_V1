@@ -5,7 +5,8 @@
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
@@ -35,56 +36,56 @@
         app:layout_constraintVertical_bias="0.01999998"
         mapbox:srcCompat="@drawable/sos" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="@+id/mapView"
-        app:layout_constraintStart_toStartOf="@+id/mapView"
-        mapbox:srcCompat="@drawable/cctv" />
+    <Button
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="wrap_content"
+        android:id="@+id/imageButton"
+        android:layout_width="82dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
+        android:background="#071656"
+        android:text="cctv"
+        android:textColor="@color/mapboxWhite"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintStart_toStartOf="@+id/mapView" />
+
+    <Button
+        android:id="@+id/imageButton2"
+        android:layout_width="82dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton"
-        mapbox:srcCompat="@drawable/police" />
+        mapbox:srcCompat="@drawable/police"
+        android:text="police"
+        android:textColor="@color/mapboxWhite"
+        android:background="#071656"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/imageButton3"
-        android:layout_width="wrap_content"
+        android:layout_width="82dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton5"
-        mapbox:srcCompat="@drawable/bell" />
+        android:text="bell"
+        android:textColor="@color/mapboxWhite"
+        android:background="#071656" />
 
-    <ImageButton
+    <Button
         android:id="@+id/imageButton4"
-        android:layout_width="wrap_content"
+        android:layout_width="85dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton3"
-        mapbox:srcCompat="@drawable/convenience_store" />
+        android:text="store"
+        android:textColor="@color/mapboxWhite"
+        android:background="#071656"/>
 
-    <ImageButton
+    <Button
+        android:layout_width="82dp"
         android:id="@+id/imageButton5"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@+id/imageButton2"
-        mapbox:srcCompat="@drawable/eraser" />
-
+        android:text="reset"
+        android:textColor="#1E1D1D"
+        android:background="#99A3AB" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
