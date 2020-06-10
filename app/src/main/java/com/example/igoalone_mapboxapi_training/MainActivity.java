@@ -133,8 +133,6 @@ public class MainActivity extends AppCompatActivity implements
     private boolean storeFlag = false;
     private boolean polFlag = false;
 
-    private String currentAddress = null;
-
     final String api_key = "NCSEKYAJD5OM5SXA";
     final String api_secret = "LU37HTRDDYKX7RYNFFATW5IVLA9K6R1B";
     Friend friend;
@@ -153,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         // cctv button
-        ImageButton cctvButton = findViewById(R.id.imageButton);
+        Button cctvButton = findViewById(R.id.imageButton);
         cctvButton.setOnClickListener(v -> {
             new markerTask().execute("http://172.20.10.3:3000/cctv");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
@@ -161,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // police button
-        ImageButton policeButton = findViewById(R.id.imageButton2);
+        Button policeButton = findViewById(R.id.imageButton2);
         policeButton.setOnClickListener(v -> {
             new markerTask().execute("http://172.20.10.3:3000/police");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
@@ -169,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // bell button
-        ImageButton bellButton = findViewById(R.id.imageButton3);
+        Button bellButton = findViewById(R.id.imageButton3);
         bellButton.setOnClickListener(v -> {
             new markerTask().execute("http://172.20.10.3:3000/bell");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
@@ -177,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // store button
-        ImageButton storeButton = findViewById(R.id.imageButton4);
+        Button storeButton = findViewById(R.id.imageButton4);
         storeButton.setOnClickListener(v -> {
             new markerTask().execute("http://172.20.10.3:3000/store");
             Toast.makeText(MainActivity.this, "현재위치 \n위도 " + currentLatitude + "\n경도 " + currentLongitude, Toast.LENGTH_LONG).show();
